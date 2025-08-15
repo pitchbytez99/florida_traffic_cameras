@@ -61,6 +61,26 @@ class FloridaTrafficCameraCoordinator():
             _LOGGER.error(f"Failed to fetch camera data: {err}")
             return None
         
+    async def perform_get_snapshot(self):
+        try:
+            await self.hass.async_add_executor_job(self._get_camera_id)
+            return await self.hass.async_add_executor_job(self._get_snapshot)
+        
+        except Exception as error:
+            _LOGGER.error(f"Unable to perform get snapshot for {self._attr_name}. {error}")
+            return None
+        
+    def _get_snapshot(self):
+        try:
+            reponse = requests.get(self.snapshot_url)
+            reponse.raise_for_status()
+            
+            return reponse.content
+            
+        except Exception as error:
+            _LOGGER.error(f"Failed to get camera snapshot of {self._attr_name}. {error}")
+            return None
+        
     def _get_camera_id(self):
         try:
             response = requests.get(FLORIDA_TRAFFIC_CAM_QUERY_URL.format(self.name), headers=self.fake_user_data.copy())
