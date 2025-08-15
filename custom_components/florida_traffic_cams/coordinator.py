@@ -83,7 +83,7 @@ class FloridaTrafficCameraCoordinator():
         
     def _get_camera_id(self):
         try:
-            response = requests.get(FLORIDA_TRAFFIC_CAM_QUERY_URL.format(self.name), headers=self.fake_user_data.copy())
+            response = requests.get(FLORIDA_TRAFFIC_CAM_QUERY_URL.format(self._attr_name), headers=self.fake_user_data.copy())
             response.raise_for_status()
             
             images_data = response.json().get(IMAGES_DATA_KEY)
