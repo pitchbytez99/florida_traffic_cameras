@@ -1,0 +1,11 @@
+{
+  "domain": "florida_traffic_cams",
+  "name": "Florida Traffic Cameras",
+  "version": "0.1.0",
+  "documentation": "https://github.com/pitchbytez99/florida_traffic_cams",
+  "requirements": ["fake-useragent>=0.1.11", "requests>=2.25.1"],
+  "config_flow": true,
+  "codeowners": ["@pitchbytez99"],
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/pitchbytez99/florida_traffic_cams/issues"
+}
