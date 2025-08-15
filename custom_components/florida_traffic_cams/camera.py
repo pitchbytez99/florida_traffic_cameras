@@ -11,6 +11,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 class FloridaTrafficCamera(Camera):
     def __init__(self, coordinator):
+        super().__init__()
         self.coordinator = coordinator
         self._attr_name = coordinator._attr_name
 

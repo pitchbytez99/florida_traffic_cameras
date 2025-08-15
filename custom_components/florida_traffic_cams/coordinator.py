@@ -23,7 +23,6 @@ _LOGGER = logging.getLogger(__name__)
 
 class FloridaTrafficCameraCoordinator():
     def __init__(self, hass, camera_name):
-        super().__init__()
         
         self.hass = hass
         self._attr_name = camera_name
