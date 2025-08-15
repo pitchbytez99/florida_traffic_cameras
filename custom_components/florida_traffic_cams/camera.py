@@ -15,4 +15,4 @@ class FloridaTrafficCamera(Camera):
         self._attr_name = coordinator._attr_name
 
     async def stream_source(self):
-        return await self.coordinator.async_request_refresh()
+        return  await self.coordinator.stream_source()
