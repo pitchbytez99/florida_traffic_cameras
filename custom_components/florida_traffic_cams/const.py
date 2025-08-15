@@ -14,3 +14,4 @@ CAMERA_SYSTEM_SOURCE_ID_KEY = "systemSourceId"
 CAMERA_SOURCE_ID_URL = "https://divas.cloud/VDS-API/SecureTokenUri/GetSecureTokenUriBySourceId"
 FLORIDA_VIDEO_FEED_URL = "{0}{1}"
 APPLICATION_JSON_HEADERS={"Content-Type": "application/json"}
+CAMERA_SNAPSHOT_URL = "	https://fl511.com/map/Cctv/{0}?t={1}"

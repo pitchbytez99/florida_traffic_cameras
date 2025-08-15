@@ -1,4 +1,3 @@
-from homeassistant.components.camera import Camera
 import time
 import logging
 import requests
@@ -16,7 +15,8 @@ from .const import (
     CAMERA_SYSTEM_SOURCE_ID_KEY,
     CAMERA_SOURCE_ID_URL,
     APPLICATION_JSON_HEADERS,
-    FLORIDA_VIDEO_FEED_URL
+    FLORIDA_VIDEO_FEED_URL,
+    CAMERA_SNAPSHOT_URL
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -33,6 +33,7 @@ class FloridaTrafficCameraCoordinator():
         self.source_id = None
         self.image_id = None
         self.fake_user_data = None
+        self.snapshot_url = None
                 
     async def stream_source(self):
         try:
@@ -68,6 +69,7 @@ class FloridaTrafficCameraCoordinator():
             images_data = response.json().get(IMAGES_DATA_KEY)
             self.image_id = images_data[IMAGES_ID_INDEX].get(IMAGES_ID_KEY)
             self.video_url = images_data[IMAGES_ID_INDEX].get(VIDEO_URL_KEY)
+            self.snapshot_url = CAMERA_SNAPSHOT_URL.format(self.image_id, int(time.time() * 1000))
             
             _LOGGER.info(f"Camera: {self.name}, Image ID: {self.image_id}, Video URL: {self.video_url}")
             

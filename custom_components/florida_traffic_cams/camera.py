@@ -17,3 +17,6 @@ class FloridaTrafficCamera(Camera):
 
     async def stream_source(self):
         return await self.coordinator.stream_source()
+    
+    async def async_camera_image(self, width=None, height=None):
+        return await self.coordinator._get_camera_id()
