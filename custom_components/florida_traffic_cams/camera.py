@@ -7,7 +7,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     
     coordinator = FloridaTrafficCameraCoordinator(hass, camera_name)
     
-    async_add_entities([FloridaTrafficCameraCoordinator(coordinator)])
+    async_add_entities([FloridaTrafficCamera(coordinator)])
 
 class FloridaTrafficCamera(Camera):
     def __init__(self, coordinator):
