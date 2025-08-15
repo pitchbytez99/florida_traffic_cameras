@@ -1,7 +1,7 @@
 {
   "domain": "florida_traffic_cameras",
   "name": "Florida Traffic Cameras",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "documentation": "https://github.com/pitchbytez99/florida_traffic_cams",
   "requirements": ["fake-useragent>=0.1.11", "requests>=2.25.1"],
   "config_flow": true,

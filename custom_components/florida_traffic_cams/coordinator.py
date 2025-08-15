@@ -21,7 +21,7 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-class FloridaTrafficCameraCoordinator(Camera):
+class FloridaTrafficCameraCoordinator():
     def __init__(self, hass, camera_name):
         super().__init__()
         
