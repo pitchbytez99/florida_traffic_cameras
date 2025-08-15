@@ -3,7 +3,7 @@ from .coordinator import FloridaTrafficCameraCoordinator
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Florida Fire Traffic Camera from config flow."""
-    camera_name = config_entry.data["county"]
+    camera_name = config_entry.data["camera_name"]
     
     coordinator = FloridaTrafficCameraCoordinator(hass, camera_name)
     
