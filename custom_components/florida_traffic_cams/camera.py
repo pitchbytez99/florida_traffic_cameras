@@ -19,4 +19,4 @@ class FloridaTrafficCamera(Camera):
         return await self.coordinator.stream_source()
     
     async def async_camera_image(self, width=None, height=None):
-        return await self.coordinator.get_snapshot()
+        return await self.coordinator.perform_get_snapshot()
