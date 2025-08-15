@@ -33,15 +33,18 @@ class FloridaTrafficCameraCoordinator(Camera):
         self.system_source_id = None
         self.source_id = None
         self.image_id = None
-        self.fake_user_data = {
-                "User-Agent": UserAgent().chrome,  # Random Chrome user agent
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-                "Accept-Language": "en-US,en;q=0.5",
-                "Connection": "keep-alive",
-            }
+        self.fake_user_data = None
                 
     async def stream_source(self):
         try:
+            if self.fake_user_data is None:
+                self.fake_user_data = {
+                    "User-Agent": UserAgent().chrome,  # Random Chrome user agent
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                    "Accept-Language": "en-US,en;q=0.5",
+                    "Connection": "keep-alive",
+                }
+            
             await self.hass.async_add_executor_job(self._get_camera_id)
             await self.hass.async_add_executor_job(self._get_camera_token)
             await self.hass.async_add_executor_job(self._get_video_session_token)
