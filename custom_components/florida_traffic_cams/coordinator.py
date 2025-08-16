@@ -101,7 +101,7 @@ class FloridaTrafficCameraCoordinator():
             
             _LOGGER.warning(response.json())
             
-            images_data = response.json().get(DATA_KEY)[DATA_KEY][IMAGES_DATA_KEY]
+            images_data = response.json().get(DATA_KEY)[DATA_INDEX][IMAGES_DATA_KEY]
             self.image_id = images_data[IMAGES_ID_INDEX].get(IMAGES_ID_KEY)
             self.video_url = images_data[IMAGES_ID_INDEX].get(VIDEO_URL_KEY)
             self.snapshot_url = CAMERA_SNAPSHOT_URL.format(self.image_id, int(time.time() * 1000))
