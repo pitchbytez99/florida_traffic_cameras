@@ -10,6 +10,8 @@ FLORIDA_TRAFFIC_CAM_QUERY_URL = (
     "{{\"data\":7,\"name\":\"\"}}],\"order\":[{{\"column\":1,\"dir\":\"asc\"}},{{\"column\":2,\"dir\":\"asc\"}}],"
     "\"start\":0,\"length\":10,\"search\":{{\"value\":\"{0}\"}}}}&lang=en"
 )
+DATA_KEY = "data"
+DATA_INDEX = 0
 IMAGES_DATA_KEY = "images"
 IMAGES_ID_INDEX = 0
 IMAGES_ID_KEY = "id"
