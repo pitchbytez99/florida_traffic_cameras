@@ -19,7 +19,8 @@ from .const import (
     FLORIDA_VIDEO_FEED_URL,
     CAMERA_SNAPSHOT_URL,
     DATA_KEY,
-    DATA_INDEX
+    DATA_INDEX,
+    HTTP_OK_RANGE
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -37,28 +38,29 @@ class FloridaTrafficCameraCoordinator():
         self.image_id = None
         self.fake_user_data = None
         self.snapshot_url = None
+        self.stream_url = None
                 
     async def stream_source(self):
         try:
             if self.fake_user_data is None:
-                self.fake_user_data = await self.hass.async_add_executor_job(
-                        lambda: {
-                            "User-Agent": str(UserAgent().chrome),
-                            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-                            "Accept-Language": "en-US,en;q=0.5",
-                            "Connection": "keep-alive",
-                        }
-                    )
+                await self.hass.async_add_executor_job(self._create_fake_user_data)
+                    
+            if self.stream_url is not None:
+                test_result = await self.hass.async_add_executor_job(self._test_stream_url)
+                
+                if not test_result:
+                    self.stream_url = None
+                
+            if self.stream_url is None:
+                await self.hass.async_add_executor_job(self._get_camera_id)
+                await self.hass.async_add_executor_job(self._get_camera_token)
+                await self.hass.async_add_executor_job(self._get_video_session_token)
+                
+                self.stream_url = FLORIDA_VIDEO_FEED_URL.format(self.video_url, self.video_session_token)
             
-            await self.hass.async_add_executor_job(self._get_camera_id)
-            await self.hass.async_add_executor_job(self._get_camera_token)
-            await self.hass.async_add_executor_job(self._get_video_session_token)
+            _LOGGER.info(f"Using stream url for {self._attr_name}: {self.stream_url}")
             
-            stream_url = FLORIDA_VIDEO_FEED_URL.format(self.video_url, self.video_session_token)
-            
-            _LOGGER.info(f"Using stream url for {self._attr_name}: {stream_url}")
-            
-            return FLORIDA_VIDEO_FEED_URL.format(self.video_url, self.video_session_token)
+            return self.stream_url
         
         except Exception as err:
             _LOGGER.error(f"Failed to fetch camera data: {err}")
@@ -67,21 +69,35 @@ class FloridaTrafficCameraCoordinator():
     async def perform_get_snapshot(self):
         try:
             if self.fake_user_data is None:
-                self.fake_user_data = await self.hass.async_add_executor_job(
-                        lambda: {
-                            "User-Agent": str(UserAgent().chrome),
-                            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-                            "Accept-Language": "en-US,en;q=0.5",
-                            "Connection": "keep-alive",
-                        }
-                    )
+                await self.hass.async_add_executor_job(self._create_fake_user_data)
+            
+            if self.snapshot_url is None:
+                await self.hass.async_add_executor_job(self._get_camera_id)
                 
-            await self.hass.async_add_executor_job(self._get_camera_id)
             return await self.hass.async_add_executor_job(self._get_snapshot)
         
         except Exception as error:
             _LOGGER.error(f"Unable to perform get snapshot for {self._attr_name}. {error}")
             return None
+        
+    def _create_fake_user_data(self):
+        self.fake_user_data = lambda: {
+                "User-Agent": str(UserAgent().chrome),
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Connection": "keep-alive",
+            }
+    
+    def _test_stream_url(self):
+        try:
+            response =  requests.head(self.stream_url, timeout=10, headers=self.fake_user_data)
+            
+            return HTTP_OK_RANGE["MIN"] <= response.status_code <= HTTP_OK_RANGE["MAX"]
+        
+        except Exception as e:
+            _LOGGER.error(f"Failed to check stream url: {self.stream_url}. {e}")
+            
+            return False
         
     def _get_snapshot(self):
         try:

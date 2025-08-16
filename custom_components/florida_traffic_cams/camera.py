@@ -14,6 +14,7 @@ class FloridaTrafficCamera(Camera):
         super().__init__()
         self.coordinator = coordinator
         self._attr_name = coordinator._attr_name
+        self._video_url = None
         
     @property
     def supported_features(self):
