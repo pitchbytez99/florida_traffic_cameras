@@ -104,11 +104,11 @@ class FloridaTrafficCameraCoordinator():
             self.video_url = images_data[IMAGES_ID_INDEX].get(VIDEO_URL_KEY)
             self.snapshot_url = CAMERA_SNAPSHOT_URL.format(self.image_id, int(time.time() * 1000))
             
-            _LOGGER.warning(f"Camera: {self._attr_name}, \
+            _LOGGER.error(f"Camera: {self._attr_name}, \
                 Image ID: {self.image_id}, \
                 Video URL: {self.video_url}, \
                 Snapshot URL: {self.snapshot_url}")
-            
+       
         except Exception as e:
             _LOGGER.error(f"Unable to fetch camera id information. {e}")
             return None
@@ -123,7 +123,7 @@ class FloridaTrafficCameraCoordinator():
             self.source_id = response_data.get(CAMERA_SOURCE_ID_KEY)
             self.system_source_id = response_data.get(CAMERA_SYSTEM_SOURCE_ID_KEY)
             
-            _LOGGER.info(f"Camera Token: {self.camera_token}, Source ID: {self.source_id}, System Source ID: {self.system_source_id}")
+            _LOGGER.error(f"Camera Token: {self.camera_token}, Source ID: {self.source_id}, System Source ID: {self.system_source_id}")
             
         except Exception as e:
             _LOGGER.error(f"Unable to get camera session information. {e}")
@@ -145,7 +145,7 @@ class FloridaTrafficCameraCoordinator():
             
             self.video_session_token = response.json()
             
-            _LOGGER.info(f"Video Session Token: {self.video_session_token}")
+            _LOGGER.error(f"Video Session Token: {self.video_session_token}")
             
         except Exception as e:
             _LOGGER.error(f"Unable to get video session token. {e}")
