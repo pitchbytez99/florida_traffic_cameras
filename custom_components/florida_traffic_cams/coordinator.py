@@ -3,6 +3,7 @@ import logging
 import requests
 from fake_useragent import UserAgent
 import logging
+import json
 from .const import (
     FLORIDA_TRAFFIC_CAM_QUERY_URL, 
     IMAGES_DATA_KEY, 
@@ -63,6 +64,16 @@ class FloridaTrafficCameraCoordinator():
         
     async def perform_get_snapshot(self):
         try:
+            if self.fake_user_data is None:
+                self.fake_user_data = await self.hass.async_add_executor_job(
+                        lambda: {
+                            "User-Agent": UserAgent().chrome,
+                            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                            "Accept-Language": "en-US,en;q=0.5",
+                            "Connection": "keep-alive",
+                        }
+                    )
+                
             await self.hass.async_add_executor_job(self._get_camera_id)
             return await self.hass.async_add_executor_job(self._get_snapshot)
         
@@ -86,12 +97,17 @@ class FloridaTrafficCameraCoordinator():
             response = requests.get(FLORIDA_TRAFFIC_CAM_QUERY_URL.format(self._attr_name), headers=self.fake_user_data.copy())
             response.raise_for_status()
             
+            _LOGGER.warning(response.json())
+            
             images_data = response.json().get(IMAGES_DATA_KEY)
             self.image_id = images_data[IMAGES_ID_INDEX].get(IMAGES_ID_KEY)
             self.video_url = images_data[IMAGES_ID_INDEX].get(VIDEO_URL_KEY)
             self.snapshot_url = CAMERA_SNAPSHOT_URL.format(self.image_id, int(time.time() * 1000))
             
-            _LOGGER.info(f"Camera: {self._attr_name}, Image ID: {self.image_id}, Video URL: {self.video_url}")
+            _LOGGER.warning(f"Camera: {self._attr_name}, \
+                Image ID: {self.image_id}, \
+                Video URL: {self.video_url}, \
+                Snapshot URL: {self.snapshot_url}")
             
         except Exception as e:
             _LOGGER.error(f"Unable to fetch camera id information. {e}")
