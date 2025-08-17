@@ -19,14 +19,7 @@ class FloridaTrafficCamera(Camera):
         self._attr_supported_features = CameraEntityFeature.STREAM     
 
     async def stream_source(self):
-        url = await self.coordinator.stream_source()
-        headers = STREAM_URL_HEADERS.copy()
-        headers["User-Agent"] = self.coordinator.fake_user_data["User-Agent"]
-        
-        return {
-            "url" : url,
-            "headers" : headers
-        }
+       return await self.coordinator.stream_source()
     
     async def async_camera_image(self, width=None, height=None):
         return await self.coordinator.perform_get_snapshot()

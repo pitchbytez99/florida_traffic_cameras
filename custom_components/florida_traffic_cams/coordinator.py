@@ -59,6 +59,7 @@ class FloridaTrafficCameraCoordinator():
                 await self.hass.async_add_executor_job(self._get_video_session_token)
                 
                 self.stream_url = FLORIDA_VIDEO_FEED_URL.format(self.video_url, self.video_session_token)
+                self.stream_url.replace("index", "xflow")
             
             _LOGGER.error(f"Using stream url for {self._attr_name}: {self.stream_url}")
             
