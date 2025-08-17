@@ -48,6 +48,8 @@ class FloridaTrafficCameraCoordinator():
             if self.stream_url is not None:
                 test_result = await self.hass.async_add_executor_job(self._test_stream_url)
                 
+                _LOGGER.error(f"test result of the stream url {test_result}")
+                
                 if not test_result:
                     self.stream_url = None
                 
@@ -58,7 +60,7 @@ class FloridaTrafficCameraCoordinator():
                 
                 self.stream_url = FLORIDA_VIDEO_FEED_URL.format(self.video_url, self.video_session_token)
             
-            _LOGGER.info(f"Using stream url for {self._attr_name}: {self.stream_url}")
+            _LOGGER.error(f"Using stream url for {self._attr_name}: {self.stream_url}")
             
             return self.stream_url
         
@@ -81,6 +83,8 @@ class FloridaTrafficCameraCoordinator():
             return None
         
     def _create_fake_user_data(self):
+        _LOGGER.error("Fake user data")
+        
         self.fake_user_data = lambda: {
                 "User-Agent": str(UserAgent().chrome),
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
@@ -91,6 +95,8 @@ class FloridaTrafficCameraCoordinator():
     def _test_stream_url(self):
         try:
             response =  requests.head(self.stream_url, timeout=10, headers=self.fake_user_data)
+            
+            _LOGGER.error(f"testing stream url status code. {response.status_code}")
             
             return HTTP_OK_RANGE["MIN"] <= response.status_code <= HTTP_OK_RANGE["MAX"]
         
@@ -104,6 +110,8 @@ class FloridaTrafficCameraCoordinator():
             reponse = requests.get(self.snapshot_url)
             reponse.raise_for_status()
             
+            _LOGGER.error(f"Getting traffic camera snapshot {self._attr_name} using {self.snapshot_url}")
+            
             return reponse.content
             
         except Exception as error:
@@ -115,7 +123,7 @@ class FloridaTrafficCameraCoordinator():
             response = requests.get(FLORIDA_TRAFFIC_CAM_QUERY_URL.format(self._attr_name), headers=self.fake_user_data.copy())
             response.raise_for_status()
             
-            _LOGGER.warning(response.json())
+            _LOGGER.error(response.json())
             
             images_data = response.json().get(DATA_KEY)[DATA_INDEX][IMAGES_DATA_KEY]
             self.image_id = images_data[IMAGES_ID_INDEX].get(IMAGES_ID_KEY)
