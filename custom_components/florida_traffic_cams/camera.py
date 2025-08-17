@@ -1,4 +1,4 @@
-from homeassistant.components.camera import Camera, SUPPORT_STREAM
+from homeassistant.components.camera import Camera, CameraEntityFeature
 from .coordinator import FloridaTrafficCameraCoordinator
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -15,10 +15,7 @@ class FloridaTrafficCamera(Camera):
         self.coordinator = coordinator
         self._attr_name = coordinator._attr_name
         self._video_url = None
-        
-    @property
-    def supported_features(self):
-        return SUPPORT_STREAM        
+        self._attr_supported_features = CameraEntityFeature.STREAM     
 
     async def stream_source(self):
         return await self.coordinator.stream_source()
