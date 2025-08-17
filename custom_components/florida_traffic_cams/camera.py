@@ -1,5 +1,6 @@
 from homeassistant.components.camera import Camera, CameraEntityFeature
 from .coordinator import FloridaTrafficCameraCoordinator
+from .const import STREAM_URL_HEADERS
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Florida Fire Traffic Camera from config flow."""
@@ -18,7 +19,14 @@ class FloridaTrafficCamera(Camera):
         self._attr_supported_features = CameraEntityFeature.STREAM     
 
     async def stream_source(self):
-        return await self.coordinator.stream_source()
+        url = await self.coordinator.stream_source()
+        headers = STREAM_URL_HEADERS.copy()
+        headers["User-Agent"] = self.coordinator.fake_user_data["User-Agent"]
+        
+        return {
+            "url" : url,
+            "headers" : headers
+        }
     
     async def async_camera_image(self, width=None, height=None):
         return await self.coordinator.perform_get_snapshot()

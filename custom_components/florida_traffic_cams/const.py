@@ -24,3 +24,17 @@ FLORIDA_VIDEO_FEED_URL = "{0}{1}"
 APPLICATION_JSON_HEADERS={"Content-Type": "application/json"}
 CAMERA_SNAPSHOT_URL = "https://fl511.com/map/Cctv/{0}?t={1}"
 HTTP_OK_RANGE = {"MIN": 200, "MAX": 399}
+STREAM_URL_HEADERS = {
+    "Accept" : "*/*",
+    "Accept-Encoding" : "gzip, deflate, br, zstd",
+    "Accept-Language" : "en-US,en;q=0.5",
+    "Connection" : "keep-alive",
+    "DNT" : 1,
+    "Host" : "dim-se15.divas.cloud:8200",
+    "Origin" : "https://fl511.com",
+    "Referer" : "https://fl511.com/",
+    "Sec-Fetch-Dest" : "empty",
+    "Sec-Fetch-Mode" : "cors",
+    "Sec-Fetch-Site" : "cross-site",
+    "Sec-GPC" : 1
+}
