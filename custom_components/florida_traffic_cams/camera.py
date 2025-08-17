@@ -1,6 +1,5 @@
 from homeassistant.components.camera import Camera, CameraEntityFeature
 from .coordinator import FloridaTrafficCameraCoordinator
-from .const import STREAM_URL_HEADERS
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Florida Fire Traffic Camera from config flow."""
