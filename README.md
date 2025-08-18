@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/pitchbytez99/florida_traffic_cameras/tree/main/custom_components/florida_traffic_cams/icons/logo.png" alt="Florida Traffic Cameras Icon" width="100"><h1>Florida Traffic Cameras</h1>
+  <img src="https://github.com/pitchbytez99/florida_traffic_cameras/blob/main/custom_components/florida_traffic_cams/icons/logo.jpg" alt="Florida Traffic Cameras Icon" width="100"><h1>Florida Traffic Cameras</h1>
 </div>
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/pitchbytez99/florida_traffic_cameras?style=flat-square)
@@ -16,9 +16,8 @@ Traffic cameras that can be used can be found on **https://fl511.com/map**
 
 ### Configuration
 1. Open **https://fl511.com/map**
-2. Go Maps
-3. Find the traffic camera you would to stream
-4. Copy the exact camera name shown in the window into the interations configuration
+2. Find the traffic camera you would like to stream
+3. Copy the exact camera name shown in the window into the interations configuration
 
 ![Configuring my integration](docs/ezgif-633592c0e2fb3a.gif)
 
