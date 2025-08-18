@@ -4,6 +4,7 @@ import requests
 from fake_useragent import UserAgent
 import logging
 import json
+import re
 from .const import (
     FLORIDA_TRAFFIC_CAM_QUERY_URL, 
     IMAGES_DATA_KEY, 
@@ -23,7 +24,7 @@ from .const import (
     HTTP_OK_RANGE,
     INDEX_URL_HEADER,
     XFLOW_KEY,
-    XFLOW_URL
+    INDEX_KEY
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -43,7 +44,6 @@ class FloridaTrafficCameraCoordinator():
         self.snapshot_url = None
         self.stream_url = None
         self.index_url = None
-        self.image_source_id = None
                 
     async def stream_source(self):
         try:
@@ -66,7 +66,7 @@ class FloridaTrafficCameraCoordinator():
                 self.index_url = FLORIDA_VIDEO_FEED_URL.format(self.video_url, self.video_session_token)
                 
                 xflow_path = await self.hass.async_add_executor_job(self._get_xflow_url)
-                self.stream_url = XFLOW_URL.format(self.image_source_id, xflow_path)
+                self.stream_url = f"{self.video_url.split(INDEX_KEY)[0]}{xflow_path}"
             
             _LOGGER.error(f"Using stream url for {self._attr_name}: {self.stream_url}")
             
@@ -94,6 +94,7 @@ class FloridaTrafficCameraCoordinator():
         try:
             header = INDEX_URL_HEADER.copy()
             header["User-Agent"] = self.fake_user_data["User-Agent"]
+            header["Host"] = re.search(r"(dim-se\d+\.divas\.cloud:8200)", self.video_url).group(0)
             
             response = requests.get(self.index_url, headers=header, verify=False)
             response.raise_for_status()
@@ -156,7 +157,6 @@ class FloridaTrafficCameraCoordinator():
             _LOGGER.error(response.json())
             
             images_data = response.json().get(DATA_KEY)[DATA_INDEX][IMAGES_DATA_KEY]
-            self.image_source_id = response.json().get(DATA_KEY)[DATA_INDEX].get(CAMERA_SOURCE_ID_KEY)
             self.image_id = images_data[IMAGES_ID_INDEX].get(IMAGES_ID_KEY)
             self.video_url = images_data[IMAGES_ID_INDEX].get(VIDEO_URL_KEY)
             self.snapshot_url = CAMERA_SNAPSHOT_URL.format(self.image_id, int(time.time() * 1000))

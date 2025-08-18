@@ -25,9 +25,8 @@ APPLICATION_JSON_HEADERS={"Content-Type": "application/json"}
 CAMERA_SNAPSHOT_URL = "https://fl511.com/map/Cctv/{0}?t={1}"
 HTTP_OK_RANGE = {"MIN": 200, "MAX": 399}
 XFLOW_KEY = "xflow.m3u8"
-XFLOW_URL = "https://dim-se15.divas.cloud:8200/chan-{0}/{1}"
+INDEX_KEY = "index.m3u8"
 INDEX_URL_HEADER = {
-    "Host": "dim-se15.divas.cloud:8200",
     "Accept": "*/*",
     "Accept-Language": "en-US,en;q=0.5",
     "Accept-Encoding": "gzip, deflate, br, zstd",
