@@ -99,7 +99,7 @@ class FloridaTrafficCameraCoordinator():
             response = requests.get(self.index_url, headers=header, verify=False)
             response.raise_for_status()
             
-            _LOGGER.error(f"Reponse for index url: {response.text}")
+            _LOGGER.debug(f"Reponse for index url: {response.text}")
             
             xflow_url = XFLOW_KEY
             for line in response.text.splitlines():
@@ -154,7 +154,7 @@ class FloridaTrafficCameraCoordinator():
             response = requests.get(FLORIDA_TRAFFIC_CAM_QUERY_URL.format(self._attr_name), headers=self.fake_user_data.copy(), verify=False)
             response.raise_for_status()
             
-            _LOGGER.error(response.json())
+            _LOGGER.debug(response.json())
             
             images_data = response.json().get(DATA_KEY)[DATA_INDEX][IMAGES_DATA_KEY]
             self.image_id = images_data[IMAGES_ID_INDEX].get(IMAGES_ID_KEY)
