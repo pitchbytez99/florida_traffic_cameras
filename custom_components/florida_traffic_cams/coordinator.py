@@ -58,8 +58,12 @@ class FloridaTrafficCameraCoordinator():
                 await self.hass.async_add_executor_job(self._get_camera_token)
                 await self.hass.async_add_executor_job(self._get_video_session_token)
                 
-                self.stream_url = FLORIDA_VIDEO_FEED_URL.format(self.video_url, self.video_session_token)
-                self.stream_url = self.stream_url.replace("index", "xflow")
+                index_url = FLORIDA_VIDEO_FEED_URL.format(self.video_url, self.video_session_token)
+                
+                response = requests.get(index_url, headers=self.fake_user_data)
+                response.raise_for_status()
+                
+                self.stream_url = index_url.replace("index", "xflow")
             
             _LOGGER.error(f"Using stream url for {self._attr_name}: {self.stream_url}")
             
@@ -171,6 +175,9 @@ class FloridaTrafficCameraCoordinator():
             response.raise_for_status()
             
             self.video_session_token = response.json()
+            
+            response = requests.options(CAMERA_SOURCE_ID_URL, headers=self.fake_user_data)
+            response.raise_for_status()
             
             _LOGGER.error(f"Video Session Token: {self.video_session_token}")
             
