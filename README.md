@@ -29,3 +29,6 @@ Traffic cameras that can be used can be found on **https://fl511.com/map**
 5. Click the blue **+ Add Integration** button.
 6. Search for "Florida Traffic Cameras" then select **Florida Traffic Cameras**.
 7. Type in the traffic camera name
+
+### Reporting Issues
+- Please include your Home Assistant logs
