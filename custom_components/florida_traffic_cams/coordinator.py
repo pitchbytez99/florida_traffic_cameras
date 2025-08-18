@@ -60,7 +60,7 @@ class FloridaTrafficCameraCoordinator():
                 
                 index_url = FLORIDA_VIDEO_FEED_URL.format(self.video_url, self.video_session_token)
                 
-                response = requests.get(index_url, headers=self.fake_user_data)
+                response = requests.get(index_url, headers=self.fake_user_data, verify=False)
                 response.raise_for_status()
                 
                 self.stream_url = index_url.replace("index", "xflow")
@@ -99,7 +99,7 @@ class FloridaTrafficCameraCoordinator():
     
     def _test_stream_url(self):
         try:
-            response =  requests.head(self.stream_url, timeout=10, headers=self.fake_user_data)
+            response =  requests.head(self.stream_url, timeout=10, headers=self.fake_user_data, verify=False)
             
             _LOGGER.error(f"testing stream url status code. {response.status_code}")
             
@@ -112,7 +112,7 @@ class FloridaTrafficCameraCoordinator():
         
     def _get_snapshot(self):
         try:
-            reponse = requests.get(self.snapshot_url)
+            reponse = requests.get(self.snapshot_url, verify=False)
             reponse.raise_for_status()
             
             _LOGGER.error(f"Getting traffic camera snapshot {self._attr_name} using {self.snapshot_url}")
@@ -125,7 +125,7 @@ class FloridaTrafficCameraCoordinator():
         
     def _get_camera_id(self):
         try:
-            response = requests.get(FLORIDA_TRAFFIC_CAM_QUERY_URL.format(self._attr_name), headers=self.fake_user_data.copy())
+            response = requests.get(FLORIDA_TRAFFIC_CAM_QUERY_URL.format(self._attr_name), headers=self.fake_user_data.copy(), verify=False)
             response.raise_for_status()
             
             _LOGGER.error(response.json())
@@ -146,7 +146,7 @@ class FloridaTrafficCameraCoordinator():
             
     def _get_camera_token(self):
         try:
-            response = requests.get(FLORIDA_CAMERA_TOKEN_URL.format(self.image_id, int(time.time() * 1000)), headers=self.fake_user_data.copy())
+            response = requests.get(FLORIDA_CAMERA_TOKEN_URL.format(self.image_id, int(time.time() * 1000)), headers=self.fake_user_data.copy(), verify=False)
             response.raise_for_status()
             
             response_data = response.json()
@@ -171,13 +171,10 @@ class FloridaTrafficCameraCoordinator():
             headers = APPLICATION_JSON_HEADERS.copy()
             headers.update(self.fake_user_data.copy())
             
-            response = requests.post(CAMERA_SOURCE_ID_URL, json=payload, headers=headers)
+            response = requests.post(CAMERA_SOURCE_ID_URL, json=payload, headers=headers, verify=False)
             response.raise_for_status()
             
             self.video_session_token = response.json()
-            
-            response = requests.options(CAMERA_SOURCE_ID_URL, headers=self.fake_user_data)
-            response.raise_for_status()
             
             _LOGGER.error(f"Video Session Token: {self.video_session_token}")
             
