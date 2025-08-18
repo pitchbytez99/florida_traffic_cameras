@@ -20,7 +20,10 @@ from .const import (
     CAMERA_SNAPSHOT_URL,
     DATA_KEY,
     DATA_INDEX,
-    HTTP_OK_RANGE
+    HTTP_OK_RANGE,
+    INDEX_URL_HEADER,
+    XFLOW_KEY,
+    XFLOW_URL
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -39,6 +42,8 @@ class FloridaTrafficCameraCoordinator():
         self.fake_user_data = None
         self.snapshot_url = None
         self.stream_url = None
+        self.index_url = None
+        self.image_source_id = None
                 
     async def stream_source(self):
         try:
@@ -58,12 +63,10 @@ class FloridaTrafficCameraCoordinator():
                 await self.hass.async_add_executor_job(self._get_camera_token)
                 await self.hass.async_add_executor_job(self._get_video_session_token)
                 
-                index_url = FLORIDA_VIDEO_FEED_URL.format(self.video_url, self.video_session_token)
+                self.index_url = FLORIDA_VIDEO_FEED_URL.format(self.video_url, self.video_session_token)
                 
-                response = requests.get(index_url, headers=self.fake_user_data, verify=False)
-                response.raise_for_status()
-                
-                self.stream_url = index_url.replace("index", "xflow")
+                xflow_path = await self.hass.async_add_executor_job(self._get_xflow_url)
+                self.stream_url = XFLOW_URL.format(self.image_source_id, xflow_path)
             
             _LOGGER.error(f"Using stream url for {self._attr_name}: {self.stream_url}")
             
@@ -87,6 +90,28 @@ class FloridaTrafficCameraCoordinator():
             _LOGGER.error(f"Unable to perform get snapshot for {self._attr_name}. {error}")
             return None
         
+    def _get_xflow_url(self):
+        try:
+            header = INDEX_URL_HEADER.copy()
+            header["User-Agent"] = self.fake_user_data["User-Agent"]
+            
+            response = requests.get(self.index_url, headers=header, verify=False)
+            response.raise_for_status()
+            
+            _LOGGER.error(f"Reponse for index url: {response.text}")
+            
+            xflow_url = XFLOW_KEY
+            for line in response.text.splitlines():
+                if XFLOW_KEY in line:
+                    xflow_url = f"{xflow_url}{line.split(XFLOW_KEY)[1]}"
+                                        
+            _LOGGER.error(f"Got the xflow url: {xflow_url}")
+            
+            return xflow_url.strip()           
+            
+        except Exception as error:
+            _LOGGER.error(f"Unable to post index url: {self.index_url}. {error}")
+        
     def _create_fake_user_data(self):
         _LOGGER.error("Fake user data")
         
@@ -99,7 +124,7 @@ class FloridaTrafficCameraCoordinator():
     
     def _test_stream_url(self):
         try:
-            response =  requests.head(self.stream_url, timeout=10, headers=self.fake_user_data, verify=False)
+            response = requests.head(self.stream_url, timeout=10, headers=self.fake_user_data, verify=False)
             
             _LOGGER.error(f"testing stream url status code. {response.status_code}")
             
@@ -131,6 +156,7 @@ class FloridaTrafficCameraCoordinator():
             _LOGGER.error(response.json())
             
             images_data = response.json().get(DATA_KEY)[DATA_INDEX][IMAGES_DATA_KEY]
+            self.image_source_id = images_data[IMAGES_ID_INDEX].get(CAMERA_SOURCE_ID_KEY)
             self.image_id = images_data[IMAGES_ID_INDEX].get(IMAGES_ID_KEY)
             self.video_url = images_data[IMAGES_ID_INDEX].get(VIDEO_URL_KEY)
             self.snapshot_url = CAMERA_SNAPSHOT_URL.format(self.image_id, int(time.time() * 1000))
