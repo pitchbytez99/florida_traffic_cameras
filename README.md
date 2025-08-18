@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="" alt="" width="100"><h1>Florida Traffic Cameras</h1>
+  <img src="https://github.com/pitchbytez99/florida_traffic_cameras/tree/main/custom_components/florida_traffic_cams/icons/logo.png" alt="Florida Traffic Cameras Icon" width="100"><h1>Florida Traffic Cameras</h1>
 </div>
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/pitchbytez99/florida_traffic_cameras?style=flat-square)
