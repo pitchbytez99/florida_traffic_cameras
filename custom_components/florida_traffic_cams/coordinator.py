@@ -1,4 +1,5 @@
 import time
+from datetime import datetime, timedelta
 import logging
 import requests
 from fake_useragent import UserAgent
@@ -44,6 +45,8 @@ class FloridaTrafficCameraCoordinator():
         self.snapshot_url = None
         self.stream_url = None
         self.index_url = None
+        self.snapshot = None
+        self.snapshot_last_update = None
                 
     async def stream_source(self):
         try:
@@ -78,13 +81,19 @@ class FloridaTrafficCameraCoordinator():
         
     async def perform_get_snapshot(self):
         try:
-            if self.fake_user_data is None:
-                await self.hass.async_add_executor_job(self._create_fake_user_data)
+            now = datetime.utcnow()
             
-            if self.snapshot_url is None:
-                await self.hass.async_add_executor_job(self._get_camera_id)
+            if not self.last_snapshot_update or now - self.last_snapshot_update > timedelta(hours=1):
+                if self.fake_user_data is None:
+                    await self.hass.async_add_executor_job(self._create_fake_user_data)
                 
-            return await self.hass.async_add_executor_job(self._get_snapshot)
+                if self.snapshot_url is None:
+                    await self.hass.async_add_executor_job(self._get_camera_id)
+                    
+                self.snapshot = await self.hass.async_add_executor_job(self._get_snapshot)
+                self.snapshot_last_update = now
+                
+            return self.snapshot
         
         except Exception as error:
             _LOGGER.error(f"Unable to perform get snapshot for {self._attr_name}. {error}")

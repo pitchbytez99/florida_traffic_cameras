@@ -11,7 +11,7 @@
 ---
 
 ## About
-Custom integration to expose any Florida traffic camera as a camera entity in Home Assistant
+Custom integration to expose any Florida traffic camera as a camera entity in Home Assistant.
 Traffic cameras that can be used can be found on **https://fl511.com/map**
 
 ### Configuration
@@ -32,3 +32,6 @@ Traffic cameras that can be used can be found on **https://fl511.com/map**
 
 ### Reporting Issues
 - Please include your Home Assistant logs
+
+## My Other Projects
+- [Florida Fire Danger Index](https://github.com/pitchbytez99/florida_fire_danger_index)
