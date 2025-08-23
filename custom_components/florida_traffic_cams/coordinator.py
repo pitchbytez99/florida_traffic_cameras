@@ -5,7 +5,7 @@ import requests
 from fake_useragent import UserAgent
 import logging
 import json
-import re
+from urllib.parse import urlparse
 from .const import (
     FLORIDA_TRAFFIC_CAM_QUERY_URL, 
     IMAGES_DATA_KEY, 
@@ -103,7 +103,7 @@ class FloridaTrafficCameraCoordinator():
         try:
             header = INDEX_URL_HEADER.copy()
             header["User-Agent"] = self.fake_user_data["User-Agent"]
-            header["Host"] = re.search(r"(dim-se\d+\.divas\.cloud:8200)", self.video_url).group(0)
+            header["Host"] = urlparse(self.video_url).netloc
             
             response = requests.get(self.index_url, headers=header, verify=False)
             response.raise_for_status()
