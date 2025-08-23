@@ -83,7 +83,7 @@ class FloridaTrafficCameraCoordinator():
         try:
             now = datetime.utcnow()
             
-            if not self.snapshot_last_update or now - self.snapshot_last_update > timedelta(hours=1):
+            if not self.snapshot_last_update or now - self.snapshot_last_update > timedelta(minutes=10):
                 if self.fake_user_data is None:
                     await self.hass.async_add_executor_job(self._create_fake_user_data)
                 
@@ -91,7 +91,8 @@ class FloridaTrafficCameraCoordinator():
                     await self.hass.async_add_executor_job(self._get_camera_id)
                     
                 self.snapshot = await self.hass.async_add_executor_job(self._get_snapshot)
-                self.snapshot_last_update = now
+            
+            self.snapshot_last_update = now
                 
             return self.snapshot
         
