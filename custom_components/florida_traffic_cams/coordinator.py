@@ -79,7 +79,7 @@ class FloridaTrafficCameraCoordinator():
             _LOGGER.error(f"Failed to fetch camera data: {err}")
             return None
         
-    async def perform_get_snapshot(self):
+    async def perform_get_snapshot(self):        
         try:
             now = datetime.utcnow()
             
@@ -91,14 +91,14 @@ class FloridaTrafficCameraCoordinator():
                     await self.hass.async_add_executor_job(self._get_camera_id)
                     
                 self.snapshot = await self.hass.async_add_executor_job(self._get_snapshot)
-            
-            self.snapshot_last_update = now
-                
-            return self.snapshot
         
         except Exception as error:
             _LOGGER.error(f"Unable to perform get snapshot for {self._attr_name}. {error}")
-            return None
+        
+        finally:
+            self.snapshot_last_update = now
+                
+            return self.snapshot
         
     def _get_xflow_url(self):
         try:
